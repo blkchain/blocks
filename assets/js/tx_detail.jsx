@@ -38,7 +38,11 @@ class TxOutput extends React.Component {
     render() {
         let o = this.props.output;
         let spk = Buffer.from(o.scriptpubkey.substr(2), 'hex');
-        let addr = bitcoin.address.fromOutputScript(spk);
+        try {
+            var addr = bitcoin.address.fromOutputScript(spk);
+        } catch(err) {
+            addr = ( <span style={{fontStyle: 'italic'}}>{err.message}</span> );
+        }
         return (
       <Table striped bordered condensed hover>
          <tbody>
