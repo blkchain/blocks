@@ -5,6 +5,10 @@ import React from 'react';
 import axios from 'axios';
 import { Table } from 'react-bootstrap';
 
+import bitcoinjs from 'js/bitcoin.js';
+const bitcoin = bitcoinjs.bitcoin;
+const Buffer = bitcoinjs.buffer.Buffer;
+
 import { reverseHex } from 'js/utils.jsx';
 
 class TxInput extends React.Component {
@@ -33,12 +37,15 @@ class TxOutput extends React.Component {
     }
     render() {
         let o = this.props.output;
+        let spk = Buffer.from(o.scriptpubkey.substr(2), 'hex');
+        let addr = bitcoin.address.fromOutputScript(spk);
         return (
       <Table striped bordered condensed hover>
          <tbody>
             <tr><th>Value:</th><td>{o.value}</td></tr>
             <tr><th>ScriptPubkey:</th><td>{o.scriptpubkey.substr(2)}</td></tr>
             <tr><th>Spent:</th><td>{o.spent ? 'Yes' : 'No'}</td></tr>
+            <tr><th>To Address:</th><td>{addr}</td></tr>
          </tbody>
       </Table>
         );

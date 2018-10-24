@@ -241,15 +241,6 @@ func txHandler(m *model.Model) http.Handler {
 		}
 
 		fmt.Fprint(w, *tx+"\n")
-
-		// js, err := json.Marshal(block)
-		// if err != nil {
-		// 	log.Printf("blockHandler: %v", err)
-		// 	http.Error(w, "This is an error", http.StatusBadRequest)
-		// 	return
-		// }
-
-		// fmt.Fprint(w, string(js))
 	})
 }
 

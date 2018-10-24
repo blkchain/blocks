@@ -28,3 +28,8 @@ node_modules/.dirstamp:
 
 test:
 	@go test ./...
+
+bitcoinjs_lib: ${ASSETS_SRC}/js/bitcoin.js
+
+${ASSETS_SRC}/js/bitcoin.js:  node_modules/.dirstamp
+	@./node_modules/.bin/browserify ${ASSETS_SRC}/js/bitcoinjs-config.js -s bitcoinjs > ${ASSETS_SRC}/js/bitcoin.js
