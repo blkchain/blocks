@@ -54,8 +54,8 @@ class TxList extends React.Component {
                 return tx
             });
             const cols = [
-                {dataField: 'n', text: 'N'},
-                {dataField: 'txid', text: 'Tx hash'}
+                {dataField: 'n', text: 'N', headerStyle: () => { return {width: '10%'}}},
+                {dataField: 'txid', text: 'Tx hash', headerStyle: () => { return {width: '90%'}}}
             ];
             const expandRow = {
                 renderer: row => (

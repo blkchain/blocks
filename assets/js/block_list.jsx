@@ -82,9 +82,9 @@ class BlockList extends React.Component {
         <Table striped bordered condensed hover>
           <thead>
             <tr>
-              <th>Height</th>
-              <th>Time</th>
-              <th>Hash</th>
+              <th style={{width: "10%"}}>Height</th>
+              <th style={{width: "20%"}}>Time</th>
+              <th style={{width: "70%"}}>Hash</th>
             </tr>
           </thead>
           <tbody>

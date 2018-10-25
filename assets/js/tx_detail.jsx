@@ -124,12 +124,12 @@ class TxInput extends React.Component {
         let addy = this.extrapolateAddress();
         return (
          <tbody>
-            <tr><th></th></tr>
-            <tr><td><b>Prevout:</b> {reverseHex(i.prevout_hash.substr(2))+':'+i.prevout_n}</td></tr>
-            <tr><td><b>Address:</b> { addy.address } ({ addy.type })</td></tr>
-            <tr><td><b>ScriptSig:</b> <span style={{fontSize: 9}}>{this.asmScriptSig()}</span></td></tr>
-            <tr><td><b>Sequence:</b> {i.sequence}</td></tr>
-            <tr><td><b>Witness:</b> {i.witness ? i.witness.substr(2) : ''}</td></tr>
+            <tr><td colspan={2}></td></tr>
+            <tr><th>Prevout:   </th> <td> {reverseHex(i.prevout_hash.substr(2))+':'+i.prevout_n}</td></tr>
+            <tr><th>Address:   </th> <td> { addy.address } ({ addy.type })</td></tr>
+            <tr><th>ScriptSig: </th> <td> <span style={{fontSize: 9}}>{this.asmScriptSig()}</span></td></tr>
+            <tr><th>Sequence:  </th> <td> {i.sequence}</td></tr>
+            <tr><th>Witness:   </th> <td> {i.witness ? i.witness.substr(2) : ''}</td></tr>
          </tbody>
         );
     }
@@ -154,11 +154,11 @@ class TxOutput extends React.Component {
         let o = this.props.output;
         return (
          <tbody>
-            <tr><th colspan={2}></th></tr>
-            <tr><th>Value:</th><td>{o.value}</td></tr>
-            <tr><th>ScriptPubkey:</th><td>{o.scriptpubkey.substr(2)}</td></tr>
-            <tr><th>Spent:</th><td>{o.spent ? 'Yes' : 'No'}</td></tr>
-            <tr><th>To Address:</th><td>{this.extrapolateAddress(o.scriptpubkey.substr(2))}</td></tr>
+            <tr><td colspan={2}></td></tr>
+            <tr><th>Value:        </th> <td>{o.value}</td></tr>
+            <tr><th>ScriptPubkey: </th> <td>{o.scriptpubkey.substr(2)}</td></tr>
+            <tr><th>Spent:        </th> <td>{o.spent ? 'Yes' : 'No'}</td></tr>
+            <tr><th>To Address:   </th> <td>{this.extrapolateAddress(o.scriptpubkey.substr(2))}</td></tr>
          </tbody>
         );
     }
@@ -194,7 +194,7 @@ class TxDetail extends React.Component {
                   <Col md={6}>
                    <Table striped condensed>
                     <thead>
-                    <tr><th>Inputs</th></tr>
+                    <tr><th style={{width: "20%"}}>Inputs</th><th style={{width: "80%"}}></th></tr>
                     </thead>
                     {inputs}
                    </Table>
@@ -202,7 +202,7 @@ class TxDetail extends React.Component {
                   <Col md={6}>
                    <Table striped condensed>
                     <thead>
-                    <tr><th colspan={2}>Outputs</th></tr>
+                    <tr><th style={{width: "20%"}}>Outputs</th><th style={{width: "80%"}}></th></tr>
                     </thead>
                     {outputs}
                    </Table>
