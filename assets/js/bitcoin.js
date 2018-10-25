@@ -2,9 +2,10 @@
 module.exports = {
   bitcoin: require('bitcoinjs-lib'),
   buffer: require('buffer'),
+  varuint: require('varuint-bitcoin')
 }
 
-},{"bitcoinjs-lib":16,"buffer":60}],2:[function(require,module,exports){
+},{"bitcoinjs-lib":16,"buffer":60,"varuint-bitcoin":143}],2:[function(require,module,exports){
 // base-x encoding
 // Forked from https://github.com/cryptocoinjs/bs58
 // Originally written by Mike Hearn for BitcoinJ
