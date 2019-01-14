@@ -14,8 +14,19 @@ class BlockDetail extends React.Component {
         this.state = {};
     }
 
+    componentWillReceiveProps(nextProps) {
+        // See: https://stackoverflow.com/questions/43087007/react-link-vs-a-tag-and-arrow-function/43986829#43986829
+        if (this.props.match.params.hash !== nextProps.match.params.hash) {
+            this.fetchState(nextProps.match.params.hash);
+        }
+    }
+
     componentDidMount() {
         const { hash } = this.props.match.params;
+        this.fetchState(hash);
+    }
+
+    fetchState(hash) {
         axios
             .get("/block/"+hash)
             .then((result) => {
@@ -29,7 +40,6 @@ class BlockDetail extends React.Component {
             return ( <div/>);
         }
 
-        const { hash } = this.props.match.params;
         let time = new Date(b.time*1000);
         return (
             <div>
@@ -64,7 +74,7 @@ class BlockDetail extends React.Component {
                 </tr>
                 </tbody>
                 </Table>
-            <TxList blockhash={hash}/>
+            <TxList blockhash={reverseHex(this.state.hash.substring(2))}/>
             </div>
         );
     }

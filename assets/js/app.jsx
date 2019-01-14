@@ -4,7 +4,7 @@
 import React from 'react';
 import axios from 'axios';
 import ReactDOM from 'react-dom';
-import { Nav, Navbar, NavItem } from 'react-bootstrap';
+import { Button, FormGroup, FormControl, Nav, Navbar, NavItem } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { HashRouter, Link, Route, Switch } from "react-router-dom";
 
@@ -54,6 +54,42 @@ class HomePanel extends React.Component {
     }
 }
 
+class SearchBox extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { term: "" };
+        this.termChange = this.termChange.bind(this);
+    }
+
+    termChange(e) {
+        this.state.term = e.target.value;
+    }
+
+    search(e, history) {
+        if (this.state.term != "") {
+            axios
+                .get("/find/"+this.state.term)
+                .then((result) => {
+                    history.push(result.data);
+                });
+            e.preventDefault();
+        }
+    }
+
+    render() {
+        return (
+          <Route render={({ history } ) => (
+            <form onSubmit={(e)=>this.search(e, history)}>
+               <FormGroup>
+                  <FormControl type="text" onChange={this.termChange} placeholder="000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f" size={74}/>
+               </FormGroup>{' '}
+               <Button type="submit">&#x1F50E;</Button>
+            </form>
+          )} />
+        );
+    }
+}
+
 class Header extends React.Component {
     render() {
         return (
@@ -75,6 +111,9 @@ class Header extends React.Component {
                   <NavItem>Help</NavItem>
                 </LinkContainer>
               </Nav>
+              <Navbar.Form pullRight>
+                <SearchBox/>
+              </Navbar.Form>
           </Navbar.Collapse>
         </Navbar>
         );

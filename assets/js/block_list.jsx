@@ -17,8 +17,8 @@ class BlockItem extends React.Component {
             <Route render={({ history } ) => (
                 <tr onClick={()=>history.push("/block/"+hash)}>
                 <td> {this.props.block.height} </td>
-                <td> {time.toString()}         </td>
-                <td> {hash}   </td>
+                <td> {time.toISOString()}      </td>
+                <td> {hash}                    </td>
                 </tr>
             )} />
         );

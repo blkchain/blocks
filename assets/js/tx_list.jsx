@@ -13,30 +13,37 @@ import { TxDetail } from 'js/tx_detail.jsx';
 class TxList extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            startN: 0,
-            batchSize: 50,
-            txs: []
-        };
+        this.state = { startN: 0, pageSize: 50, txs: [] };
 
         this.nextClick = this.nextClick.bind(this);
         this.prevClick = this.prevClick.bind(this);
     }
 
-    componentDidMount() {
-        this.getData();
+    componentWillReceiveProps(nextProps) {
+        if (this.props.blockhash !== nextProps.blockhash) {
+            this.state = { startN: 0, pageSize: 50, txs: [] }; // reset state
+            this.getData(nextProps.blockhash);
+        }
     }
 
-    getData() {
+    componentDidMount() {
+        this.getData(this.props.blockhash);
+    }
+
+    getData(blockhash) {
         axios
-            .get("/block/"+this.props.blockhash+"/txs/"+this.state.startN+"/"+this.state.batchSize)
+            .get("/block/"+blockhash+"/txs/"+this.state.startN+"/"+this.state.pageSize)
             .then((result) => {
-                    this.setState({ txs: result.data });
+                const txs = result.data.map((tx, i) => {
+                    tx.txid = reverseHex(tx.txid.substr(2));
+                    return tx
+                });
+                this.setState({ txs: txs });
                 });
     }
 
     prevClick(lastN) {
-        this.state.startN = lastN-(this.state.batchSize*2)+1;
+        this.state.startN = lastN-(this.state.pageSize*2)+1;
         this.getData();
     }
 
@@ -47,12 +54,8 @@ class TxList extends React.Component {
 
     render() {
         if (this.state.txs && this.state.txs.length > 0) {
-            let lastN = 0;
-            const txs = this.state.txs.map((tx, i) => {
-                tx.txid = reverseHex(tx.txid.substr(2));
-                lastN = tx.n;
-                return tx
-            });
+            let txs = this.state.txs;
+            let lastN = txs[txs.length-1].n;
             const cols = [
                 {dataField: 'n', text: 'N', headerStyle: () => { return {width: '10%'}}},
                 {dataField: 'txid', text: 'Tx hash', headerStyle: () => { return {width: '90%'}}}
@@ -64,8 +67,8 @@ class TxList extends React.Component {
             };
             return (
                 <div>
-                    <Button onClick={() => this.prevClick(lastN)} disabled={(lastN<this.state.batchSize)}>Prev</Button>
-                    <Button onClick={() => this.nextClick(lastN)} disabled={(txs.length < this.state.batchSize)}>Next</Button>
+                    <Button onClick={() => this.prevClick(lastN)} disabled={(lastN<this.state.pageSize)}>Prev</Button>
+                    <Button onClick={() => this.nextClick(lastN)} disabled={(txs.length < this.state.pageSize)}>Next</Button>
                     <BootstrapTable keyField='n' data={ txs } columns={ cols } expandRow={ expandRow } />
                 </div>
             );
