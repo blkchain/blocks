@@ -51,9 +51,9 @@ func Start(cfg Config, m *model.Model, listener net.Listener) {
 	tr := root.PathPrefix("/tx").Subrouter()
 	tr.Handle("/{hash:[a-fA-F0-9]+}", txHandler(m))
 
-	// /find/<hex>
+	// /find/<str>
 	fr := root.PathPrefix("/find").Subrouter()
-	fr.Handle("/{hex:[a-fA-F0-9]+}", findHandler(m))
+	fr.Handle("/{str:[a-zA-Z0-9]+}", findHandler(m))
 
 	// /addr/<addr>/txs[?start=<tx_id>&limit=<n>]
 	ar := root.PathPrefix("/addr").Subrouter()
@@ -256,9 +256,9 @@ func txHandler(m *model.Model) http.Handler {
 
 func findHandler(m *model.Model) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		hexStr := mux.Vars(r)["hex"]
-		if len(hexStr) == 64 { // looks like a hash
-			hash, err := blkchain.Uint256FromString(hexStr)
+		s := mux.Vars(r)["str"]
+		if len(s) == 64 { // looks like a hash
+			hash, err := blkchain.Uint256FromString(s)
 			if err != nil {
 				log.Printf("findHandler: %v", err)
 				http.Error(w, "This is an error", http.StatusBadRequest)
@@ -271,18 +271,12 @@ func findHandler(m *model.Model) http.Handler {
 				return
 			}
 			if typ != nil {
-				fmt.Fprintf(w, "/%s/%v", *typ, hash)
-				// url := fmt.Sprintf("/%s/%v", *typ, hash)
-				// http.Redirect(w, r, url, http.StatusFound)
+				fmt.Fprintf(w, "{\"type\":%q, \"hex\":\"%v\"}", *typ, hash)
 				return
 			}
 		}
-
-		// TODO: This is an address ZZZ
-
-		// So there should be a list of transactions somewhere
-
-		http.NotFound(w, r)
+		// Last option - this is an address
+		fmt.Fprintf(w, "{\"type\":\"addr\", \"addr\":\"%v\"}", s)
 	})
 }
 
@@ -302,8 +296,12 @@ func addrHandler(m *model.Model) http.Handler {
 		if start == 0 {
 			start = 0xFFFFFFFFFFFF // some large number
 		}
-		if limit == 0 || limit > 10 {
-			limit = 10
+		LIMIT := 50
+		if limit == 0 || limit > LIMIT {
+			limit = LIMIT
+		}
+		if limit < -LIMIT {
+			limit = -LIMIT
 		}
 
 		txs, err := m.SelectTxsByAddrJson(addr, start, limit)

@@ -10,6 +10,8 @@ import { HashRouter, Link, Route, Switch } from "react-router-dom";
 
 import { BlockList } from 'js/block_list.jsx';
 import { BlockDetail } from 'js/block_detail.jsx';
+import { TxList } from 'js/tx_list.jsx';
+import { TxDetail } from 'js/tx_detail.jsx';
 import { findSurrogatePair } from 'js/utils.jsx';
 
 class BlocksPanel extends React.Component {
@@ -46,7 +48,13 @@ class HomePanel extends React.Component {
         <div>
 
           <p>
-                Nulla pulvinar diam
+            <blockquote>
+            Click "Blocks" above to see blocks or use the search box.<br/>
+            This bitcoin block explorer is powered by Golang and PostgreSQL.<br/>
+            Source code is here: <a href={'https://github.com/blkchain/blocks'}>https://github.com/blkchain/blocks</a><br/>
+            <br/>
+            Note: this little server probably cannot handle too much traffic.<br/>
+            </blockquote>
           </p>
 
         </div>
@@ -70,7 +78,12 @@ class SearchBox extends React.Component {
             axios
                 .get("/find/"+this.state.term)
                 .then((result) => {
-                    history.push(result.data);
+                    let data = result.data;
+                    if (data.type == "addr") {
+                        history.push("/addr/"+data.addr);
+                    } else {
+                        history.push("/"+data.type+"/"+data.hex);
+                    }
                 });
             e.preventDefault();
         }
@@ -102,7 +115,7 @@ class Header extends React.Component {
             </Navbar.Header>
             <Navbar.Collapse>
               <Nav>
-                <LinkContainer to="/blocks">
+                <LinkContainer to={"/blocks?"+Math.random().toString().slice(2,10)}>
                   <NavItem>Blocks</NavItem>
                 </LinkContainer>
               </Nav>
@@ -127,6 +140,8 @@ class Routes extends React.Component {
           <Route path="/" exact component={HomePanel} />
           <Route path="/blocks" component={BlocksPanel} />
           <Route path="/block/:hash" component={BlockDetail} />
+          <Route path="/addr/:addr" component={TxList} />
+          <Route path="/tx/:txid" render={(props) => <TxDetail txid={props.match.params.txid} />} />
           <Route path="/help" component={HelpPanel}/>
         </Switch>
         );

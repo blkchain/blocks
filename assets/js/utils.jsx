@@ -27,8 +27,9 @@ function reverseHex(hex) {
     return str;
 }
 
-function parseWitness(buffer) {
+function parseWitness(witStr) {
 
+    let buffer = Buffer.from(witStr, 'hex')
     let offset = 0;
 
     function readSlice (n) {
@@ -69,9 +70,7 @@ function addressFromScriptSig(ssStr, witStr) {
     if (ss.length == 0) {
         // Native SegWit: P2WSH or P2WPKH
 
-        let wbuff = Buffer.from(witStr, 'hex')
-
-        let witness = parseWitness(wbuff);
+        let witness = parseWitness(witStr);
 
         let pub = witness[witness.length-1];
         let sha = bitcoin.crypto.sha256(pub);
@@ -158,4 +157,4 @@ function decodeAddress(address) {
 
 window.decodeAddress = decodeAddress; // ZZZ
 
-export { findSurrogatePair, reverseHex, addressFromScriptSig, addressFromScriptPubKey, asmScriptSig, decodeAddress }
+export { findSurrogatePair, reverseHex, addressFromScriptSig, addressFromScriptPubKey, asmScriptSig, decodeAddress, parseWitness }
