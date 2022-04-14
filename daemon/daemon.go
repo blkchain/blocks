@@ -7,10 +7,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	"relative/model"
-	"relative/ui"
-
 	"github.com/blkchain/blkchain/db"
+	"github.com/blkchain/blocks/model"
+	"github.com/blkchain/blocks/ui"
 )
 
 type Config struct {

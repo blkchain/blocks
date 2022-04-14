@@ -5,8 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"relative/daemon"
-
+	"github.com/blkchain/blocks/daemon"
 	assetfs "github.com/elazarl/go-bindata-assetfs"
 )
 

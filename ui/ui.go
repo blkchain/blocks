@@ -9,9 +9,8 @@ import (
 	"strconv"
 	"time"
 
-	"relative/model"
-
 	"github.com/blkchain/blkchain"
+	"github.com/blkchain/blocks/model"
 	"github.com/gorilla/mux"
 )
 
@@ -28,6 +27,7 @@ func Start(cfg Config, m *model.Model, listener net.Listener) {
 		MaxHeaderBytes: 1 << 16} // 64K
 
 	root := mux.NewRouter()
+	root.Use(logger())
 	root.Handle("/", indexHandler(m, cfg.Babel))
 	root.PathPrefix("/js/").Handler(http.FileServer(cfg.Assets))
 
@@ -62,6 +62,15 @@ func Start(cfg Config, m *model.Model, listener net.Listener) {
 
 	server.Handler = root
 	go server.Serve(listener)
+}
+
+func logger() mux.MiddlewareFunc {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			log.Printf("HTTP %v %v %v", r.Header["X-Forwarded-For"], r.Method, r.URL.RequestURI())
+			next.ServeHTTP(w, r)
+		})
+	}
 }
 
 func indexHandler(m *model.Model, babel bool) http.Handler {
