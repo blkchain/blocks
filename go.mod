@@ -9,6 +9,7 @@ require (
 )
 
 require (
+	github.com/go-bindata/go-bindata v3.1.2+incompatible // indirect
 	github.com/jmoiron/sqlx v1.3.1 // indirect
 	github.com/lib/pq v1.9.0 // indirect
 )

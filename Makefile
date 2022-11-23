@@ -14,7 +14,8 @@ help:
 
 build: compile_js
 	@export GOPATH=$${GOPATH-~/go} && \
-	$$GOPATH/bin/go-bindata -o bindata.go -tags builtinassets ${ASSETS_GEN}/... && \
+	go install github.com/go-bindata/go-bindata/go-bindata@latest && \
+	go-bindata -o bindata.go -tags builtinassets ${ASSETS_GEN}/... && \
 	go build -tags builtinassets -ldflags "-X main.builtinAssets=${ASSETS_GEN}"
 
 compile_js: node_modules/.dirstamp
